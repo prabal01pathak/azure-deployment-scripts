@@ -37,6 +37,7 @@ def deploy(image_name: str, path: str, registry_name: str = ACR_NAME):
              --environment  {ENV} \
            --registry-server {REGISTRY_SERVER}  \
             --image {service}:latest \
+            --env-file .env \
             """
         print("service: ", service, ", path: ", path)
         os.chdir(path=path)
