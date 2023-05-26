@@ -1,5 +1,5 @@
-from deployment_scripts import build_images
+from deployment_scripts import deploy
 
 
 if __name__ == "__main__":
-    build_images()
+    deploy(image_name="", path="")

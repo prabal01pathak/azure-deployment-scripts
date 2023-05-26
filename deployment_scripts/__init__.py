@@ -8,15 +8,15 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # acr build
-ACR_NAME = "vmscontainers" # => add your azure container registry name 
-RESOURCEGROUP = "testing" # => add your azure resource group name 
+ACR_NAME = "reattestcontainer" # => add your azure container registry name 
+RESOURCEGROUP = "myfirsttest-res" # => add your azure resource group name 
 ENV  = "managedEnvironment-myfirsttestres-ad45" # => add your azure environment name
 REGISTRY_SERVER = "reattestcontainer.azurecr.io" # => add your azure registry server name
 
 
 # service local need to be specified
 services_and_paths = {
-    "createvisit-fe-ms": "/home/prabal/Documents/vms/createvisit-fe-ms",
+    "createvisit-fe": "/home/prabal/Documents/vms/createvisit-fe-ms",
     "reception-fe-ms": "/home/prabal/Documents/vms/reception-be-ms",
     "mobile-fe-ms": "/home/prabal/Documents/vms/mobile-be-ms",
     "createvisit-be-ms": "/home/prabal/Documents/vms/createvisit-be-ms",
@@ -43,6 +43,7 @@ def deploy(image_name: str, path: str, registry_name: str = ACR_NAME):
         print("dirs: ", os.listdir())
         deployment_output = subprocess.check_output(command, shell=True)
         print("deployment output: ", deployment_output)
+        break
     return {"message": "deployment is done"}
 
 
