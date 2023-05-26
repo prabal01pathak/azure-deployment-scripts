@@ -4,13 +4,14 @@ import os
 import json
 import subprocess
 from dotenv import load_dotenv
+
 load_dotenv()
 
 # acr build
 ACR_NAME = "vmscontainers" # => add your azure container registry name 
 RESOURCEGROUP = "testing" # => add your azure resource group name 
-ENV  = "managedEnvironment-myfirsttestres-ad45"
-REGISTRY_SERVER = "reattestcontainer.azurecr.io"
+ENV  = "managedEnvironment-myfirsttestres-ad45" # => add your azure environment name
+REGISTRY_SERVER = "reattestcontainer.azurecr.io" # => add your azure registry server name
 
 
 # service local need to be specified
@@ -45,7 +46,7 @@ def deploy(image_name: str, path: str, registry_name: str = ACR_NAME):
     return {"message": "deployment is done"}
 
 
-def build_and_deploy(image_name: str, path: str, registry_name: str = ACR_NAME):
+def build_and_restart(image_name: str, path: str, registry_name: str = ACR_NAME):
     for service, path in services_and_paths.items():
         print("service: ", service, ", path: ", path)
         os.chdir(path=path)
