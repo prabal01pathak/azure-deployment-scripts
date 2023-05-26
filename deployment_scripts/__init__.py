@@ -7,25 +7,46 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # acr build
-ACR_NAME = "vmscontainers"
-RESOURCEGROUP = "testing"
+ACR_NAME = "vmscontainers" # => add your azure container registry name 
+RESOURCEGROUP = "testing" # => add your azure resource group name 
+ENV  = "managedEnvironment-myfirsttestres-ad45"
+REGISTRY_SERVER = "reattestcontainer.azurecr.io"
 
+
+# service local need to be specified
 services_and_paths = {
-    "createvisit_fe_ms": "/home/prabal/Documents/vms/createvisit-fe-ms",
-    "reception_fe_ms": "/home/prabal/Documents/vms/reception-be-ms",
-    "mobile_fe_ms": "/home/prabal/Documents/vms/mobile-be-ms",
-
-    "createvisit_be_ms": "/home/prabal/Documents/vms/createvisit-be-ms",
-    "masterdata_be_ms": "/home/prabal/Documents/vms/masterdata-be-ms",
-    "faceapi_be_ms": "/home/prabal/Documents/vms/faceapi-be-ms",
-    "authentication_be_ms": "/home/prabal/Documents/vms/authentication-be-ms",
+    "createvisit-fe-ms": "/home/prabal/Documents/vms/createvisit-fe-ms",
+    "reception-fe-ms": "/home/prabal/Documents/vms/reception-be-ms",
+    "mobile-fe-ms": "/home/prabal/Documents/vms/mobile-be-ms",
+    "createvisit-be-ms": "/home/prabal/Documents/vms/createvisit-be-ms",
+    "masterdata-be-ms": "/home/prabal/Documents/vms/masterdata-be-ms",
+    "faceapi-be-ms": "/home/prabal/Documents/vms/faceapi-be-ms",
+    "authentication-be-ms": "/home/prabal/Documents/vms/authentication-be-ms",
 }
 
 
-def build_image(image_name: str, path: str, registry_name: str = ACR_NAME):
+def deploy(image_name: str, path: str, registry_name: str = ACR_NAME):
     """ build images in acr"""
     for service, path in services_and_paths.items():
         # os.system(f"az acr build -t {acr_name}/{service}:latest -r {acr_name} {path}")
+        command = f"""az containerapp up \
+             --name {service.replace("_", "-")} \
+            --source . \
+             --resource-group {RESOURCEGROUP} \
+             --environment  {ENV} \
+           --registry-server {REGISTRY_SERVER}  \
+            --image {service}:latest \
+            """
+        print("service: ", service, ", path: ", path)
+        os.chdir(path=path)
+        print("dirs: ", os.listdir())
+        deployment_output = subprocess.check_output(command, shell=True)
+        print("deployment output: ", deployment_output)
+    return {"message": "deployment is done"}
+
+
+def build_and_deploy(image_name: str, path: str, registry_name: str = ACR_NAME):
+    for service, path in services_and_paths.items():
         print("service: ", service, ", path: ", path)
         os.chdir(path=path)
         print("dirs: ", os.listdir())
@@ -44,4 +65,4 @@ def build_image(image_name: str, path: str, registry_name: str = ACR_NAME):
         )
         restart_output = subprocess.check_output(restart_command, shell=True)
         print("restart output: ", restart_output)
-    return {"message": "build images is done"}
+    return {"message": "deployment images is done"}
